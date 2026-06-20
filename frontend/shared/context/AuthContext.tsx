@@ -67,17 +67,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = async () => {
     setIsLoading(true);
     try {
-      await fetch("/api/auth/session", { method: "POST" });
+      // 1. Sign out of Supabase client first
       const supabase = createClient();
       await supabase.auth.signOut();
-      setUser(null);
-      setRole(null);
-      router.push("/login");
     } catch (e) {
-      console.error("Logout failed:", e);
-    } finally {
-      setIsLoading(false);
+      console.error("Supabase signOut failed:", e);
     }
+
+    try {
+      // 2. Clear backend session cookies
+      await fetch("/api/auth/session", { method: "POST" });
+    } catch (e) {
+      console.error("Backend session clear failed:", e);
+    }
+
+    // 3. Clear all potential mock/development cookies and localStorage
+    try {
+      document.cookie = "mock_access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+      document.cookie = "mock_session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+      document.cookie = "session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+      localStorage.removeItem("mock_user");
+    } catch (e) {}
+
+    // 4. Update state and redirect with a full page reload to clear client caches
+    setUser(null);
+    setRole(null);
+    setIsLoading(false);
+    window.location.href = "/login";
   };
 
   return (

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Globe, Loader2, AlertCircle, CheckCircle2 } from "lucide-react";
-import { useState, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -31,6 +31,32 @@ function ResetPasswordContent() {
   const [success, setSuccess] = useState<string | null>(null);
   const [devResetLink, setDevResetLink] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isVerifyingToken, setIsVerifyingToken] = useState(!!token);
+  const [isTokenValid, setIsTokenValid] = useState(false);
+
+  useEffect(() => {
+    if (token) {
+      setIsVerifyingToken(true);
+      setError(null);
+      fetch(`/api/auth/reset-password?token=${encodeURIComponent(token)}`)
+        .then(async (res) => {
+          const data = await res.json();
+          if (res.ok && data.valid) {
+            setIsTokenValid(true);
+          } else {
+            setIsTokenValid(false);
+            setError(data.error || "Invalid or expired reset token.");
+          }
+        })
+        .catch(() => {
+          setIsTokenValid(false);
+          setError("Failed to verify reset token.");
+        })
+        .finally(() => {
+          setIsVerifyingToken(false);
+        });
+    }
+  }, [token]);
 
   const forgotForm = useForm<ForgotFormValues>({
     resolver: zodResolver(forgotSchema),
@@ -137,7 +163,12 @@ function ResetPasswordContent() {
             Go to Login
           </Link>
         </div>
-      ) : token ? (
+      ) : isVerifyingToken ? (
+        <div className="text-center py-8">
+          <Loader2 className="w-8 h-8 mx-auto text-[#6B46C1] animate-spin mb-4" />
+          <p className="text-slate-500 text-sm">Verifying reset token...</p>
+        </div>
+      ) : (token && isTokenValid) ? (
         // Reset Password confirmation form
         <form className="space-y-5" onSubmit={resetForm.handleSubmit(onResetSubmit)}>
           <div>

@@ -36,13 +36,10 @@ export async function POST(request: Request) {
     const resetUrl = `${origin}/reset-password?token=${resetToken}`
 
     if (!process.env.RESEND_API_KEY || process.env.RESEND_API_KEY === 'dummy') {
-      console.log('RESET PASSWORD LINK (Resend is not configured):', resetUrl);
+      console.error('Forgot password error: RESEND_API_KEY is not configured or is set to dummy.');
       return Response.json(
-        { 
-          message: 'Password reset link generated. Since no email service is configured, use the link below.',
-          resetLink: resetUrl
-        },
-        { status: 200 }
+        { error: 'Email service is not configured on the server. Please check RESEND_API_KEY environment variable.' },
+        { status: 500 }
       )
     }
 
@@ -72,14 +69,10 @@ export async function POST(request: Request) {
     })
 
     if (error) {
-      console.error('Email error:', error)
-      // Fallback if email fails
+      console.error('Resend email API error:', error)
       return Response.json(
-        { 
-          message: 'Failed to send email, but link was generated.',
-          resetLink: resetUrl 
-        },
-        { status: 200 }
+        { error: `Failed to send password reset email: ${error.message || 'Unknown error'}` },
+        { status: 500 }
       )
     }
 

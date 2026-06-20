@@ -8,6 +8,34 @@ function getIp(request: Request) {
   return forwarded ? forwarded.split(",")[0] : "127.0.0.1";
 }
 
+export async function GET(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const token = searchParams.get("token");
+
+    if (!token || token.trim() === "" || token === "null" || token === "undefined") {
+      return NextResponse.json({ valid: false, error: "A token is required." }, { status: 400 });
+    }
+
+    const user = await prisma.user.findFirst({
+      where: {
+        resetToken: token,
+        resetTokenExpiry: {
+          gt: new Date()
+        }
+      }
+    });
+
+    if (!user) {
+      return NextResponse.json({ valid: false, error: "Invalid or expired reset token." }, { status: 400 });
+    }
+
+    return NextResponse.json({ valid: true });
+  } catch (e: any) {
+    return NextResponse.json({ valid: false, error: e.message || "Internal server error" }, { status: 500 });
+  }
+}
+
 export async function POST(request: Request) {
   const ip = getIp(request);
   const userAgent = request.headers.get("user-agent") || "Unknown";
@@ -15,8 +43,12 @@ export async function POST(request: Request) {
   try {
     const { token, password } = await request.json();
 
-    if (!token || !password) {
-      return NextResponse.json({ error: "Token and password are required." }, { status: 400 });
+    if (!token || typeof token !== "string" || token.trim() === "" || token === "null" || token === "undefined") {
+      return NextResponse.json({ error: "A valid token is required." }, { status: 400 });
+    }
+
+    if (!password) {
+      return NextResponse.json({ error: "Password is required." }, { status: 400 });
     }
 
     // Find user with valid token
