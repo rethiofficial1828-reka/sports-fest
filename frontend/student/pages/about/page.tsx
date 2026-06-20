@@ -80,21 +80,7 @@ const TEAM_MEMBERS = [
     desc: "Cyber Security Student at Nehru Institute of Technology, passionate about ethical hacking, secure application development, and building innovative digital solutions.",
     image: "/images/rethish.jpg",
     email: "rethiofficial1828@gmail.com",
-  },
-  {
-    name: "Dr. Vikram Sethi",
-    role: "Chief Advisory Director",
-    desc: "Former national decathlete with 20+ years of sports administration experience. Oversees university collaborations.",
-    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&q=80",
-    email: "vikram.sethi@sportsfest.in",
-  },
-  {
-    name: "Meera Nair",
-    role: "Lead Event Coordinator",
-    desc: "Specialist in tournament scheduling and inter-state college logistics. Ensures high-standard rulebook compliance.",
-    image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&q=80",
-    email: "meera.nair@sportsfest.in",
-  },
+  }
 ];
 
 const FAQS = [
@@ -146,7 +132,7 @@ export default function AboutPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="font-display text-4xl sm:text-6xl font-extrabold tracking-tight max-w-4xl mx-auto leading-tight"
+            className="font-display text-4xl sm:text-6xl font-extrabold tracking-tight max-w-4xl mx-auto leading-tight text-white"
           >
             Connecting Athletes, Fests & <span className="text-[#A78BFA] bg-gradient-to-r from-violet-400 to-fuchsia-400 bg-clip-text text-transparent">Colleges</span> Nationwide
           </motion.h1>
@@ -218,7 +204,7 @@ export default function AboutPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16 relative z-10">
           <div className="text-center space-y-4">
             <span className="text-xs font-bold uppercase tracking-wider text-indigo-400 bg-indigo-500/10 px-3 py-1 rounded-full border border-indigo-500/20">Powerful Capabilities</span>
-            <h2 className="font-display text-3xl sm:text-4xl font-extrabold tracking-tight">Standardizing Collegiate Sports Coordination</h2>
+            <h2 className="font-display text-3xl sm:text-4xl font-extrabold tracking-tight text-white">Standardizing Collegiate Sports Coordination</h2>
             <p className="text-slate-400 max-w-xl mx-auto text-sm sm:text-base font-medium">
               Say goodbye to messy Google Forms, outdated brochures, and uncoordinated schedules.
             </p>
@@ -260,7 +246,7 @@ export default function AboutPage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="flex justify-center">
           {TEAM_MEMBERS.map((member, i) => (
             <motion.div
               key={member.name}
@@ -268,7 +254,7 @@ export default function AboutPage() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.15 }}
-              className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm hover:shadow-lg transition-all flex flex-col justify-between group"
+              className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm hover:shadow-lg transition-all flex flex-col justify-between group max-w-md w-full"
             >
               <div className="space-y-6">
                 <div className="relative w-full aspect-square rounded-2xl overflow-hidden bg-slate-100 border border-slate-200/50">
@@ -277,18 +263,16 @@ export default function AboutPage() {
                     alt={member.name}
                     className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500" 
                   />
-                  <div className="absolute top-4 right-4 bg-slate-900/80 backdrop-blur-md px-3 py-1 rounded-full border border-white/10">
-                    <span className="text-[10px] font-bold text-white uppercase tracking-wider">{member.role}</span>
-                  </div>
                 </div>
                 
                 <div className="space-y-2">
                   <h3 className="text-xl font-bold text-[#111827]">{member.name}</h3>
+                  <p className="text-sm font-extrabold text-[#6B46C1] uppercase tracking-wider">{member.role}</p>
                   <p className="text-slate-500 text-sm font-medium leading-relaxed">{member.desc}</p>
                 </div>
               </div>
 
-              <div className="pt-6 mt-6 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-[#6B46C1] hover:text-indigo-600 transition-colors">
+              <div className="pt-6 mt-6 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-[#6B46C1] hover:text-[#553C9A] transition-colors">
                 <span className="flex items-center gap-2">
                   <Mail className="w-4 h-4 text-slate-400" />
                   {member.email}
@@ -360,7 +344,7 @@ export default function AboutPage() {
         >
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_100%_0%,#6B46C1,transparent_50%)] opacity-35" />
           <div className="relative max-w-3xl space-y-6 text-center sm:text-left">
-            <h2 className="font-display text-3xl sm:text-5xl font-extrabold leading-tight">Ready to Take Your Game to the Next Level?</h2>
+            <h2 className="font-display text-3xl sm:text-5xl font-extrabold leading-tight text-white">Ready to Take Your Game to the Next Level?</h2>
             <p className="text-slate-300 text-base sm:text-lg font-medium">
               Join thousands of student athletes and college organizers listing their sports tournaments on SportsFest.
             </p>
