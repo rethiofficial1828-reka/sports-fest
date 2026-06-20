@@ -256,4 +256,18 @@ model Attendance {
   @@index([userId])
 }
 
+model LoginAttempt {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  attempts      Int       @default(0)
+  lockoutUntil  DateTime?
+  updatedAt     DateTime  @updatedAt
+}
 
+model RateLimit {
+  id            String    @id @default(cuid())
+  key           String    @unique // Combination of IP + Endpoint
+  count         Int       @default(1)
+  resetTime     DateTime
+  updatedAt     DateTime  @updatedAt
+}

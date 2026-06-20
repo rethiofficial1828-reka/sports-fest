@@ -12,7 +12,7 @@ import { getSessionUser } from "@/backend/lib/auth/jwt";
 
 export async function GET(request: Request) {
   const ip = getIp(request);
-  const rateLimitCheck = checkRateLimit(ip, "get-events", 60, 60 * 1000); // 60 requests per min
+  const rateLimitCheck = await checkRateLimit(ip, "get-events", 60, 60 * 1000); // 60 requests per min
   if (!rateLimitCheck.success) {
     return NextResponse.json({ error: "Too many requests. Please try again later." }, { status: 429 });
   }
@@ -27,7 +27,7 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   const ip = getIp(request);
-  const rateLimitCheck = checkRateLimit(ip, "create-event", 10, 60 * 1000); // 10 requests per min
+  const rateLimitCheck = await checkRateLimit(ip, "create-event", 10, 60 * 1000); // 10 requests per min
   if (!rateLimitCheck.success) {
     return NextResponse.json({ error: "Too many requests. Please try again later." }, { status: 429 });
   }

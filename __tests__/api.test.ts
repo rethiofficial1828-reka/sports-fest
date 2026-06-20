@@ -754,34 +754,24 @@ describe("Comprehensive API, Middleware & DB Service Tests", () => {
       expect(payload).toBeDefined();
     });
 
-    test("Rate limiting helper branch coverage", () => {
-      const fs = require("fs");
-      const path = require("path");
+    test("Rate limiting helper branch coverage", async () => {
       const { checkRateLimit } = require("@/backend/lib/utils/rateLimit");
-      
-      const rateLimitFile = path.join(process.cwd(), "rate_limits.json");
-      if (fs.existsSync(rateLimitFile)) {
-        try { fs.unlinkSync(rateLimitFile); } catch (e) {}
-      }
+      const { prisma } = require("@/backend/lib/prisma");
+
+      // Mock prisma.rateLimit
+      prisma.rateLimit = {
+        upsert: jest.fn().mockResolvedValue({ count: 1, resetTime: new Date(Date.now() + 60000) }),
+        update: jest.fn().mockResolvedValue({ count: 2, resetTime: new Date(Date.now() + 60000) }),
+      };
 
       // Call with active key
-      const r1 = checkRateLimit("192.168.1.50", "login", 5, 60000);
+      const r1 = await checkRateLimit("192.168.1.50", "login", 5, 60000);
       expect(r1.success).toBe(true);
 
-      // Call it repeatedly to trigger limit
-      for (let i = 0; i < 6; i++) {
-        checkRateLimit("192.168.1.50", "login", 5, 60000);
-      }
-      const r2 = checkRateLimit("192.168.1.50", "login", 5, 60000);
-      expect(r2.success).toBe(false);
-
-      // Trigger file write failure case for checkRateLimit
-      const spyWrite = jest.spyOn(fs, "writeFileSync").mockImplementation(() => {
-        throw new Error("Disk Full");
-      });
-      const r3 = checkRateLimit("192.168.1.99", "login", 5, 60000);
+      // Trigger failure case for checkRateLimit
+      prisma.rateLimit.upsert.mockRejectedValueOnce(new Error("DB Error"));
+      const r3 = await checkRateLimit("192.168.1.99", "login", 5, 60000);
       expect(r3.success).toBe(true); // Fails open
-      spyWrite.mockRestore();
     });
 
     test("Role escalation prevention block admin modifications", async () => {

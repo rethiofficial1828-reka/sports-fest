@@ -81,17 +81,7 @@ describe("Authentication & Session Management Tests", () => {
   beforeEach(() => {
     mockDb.users = [];
     mockDb.verificationCodes = [];
-    // Clear lockout and rate limit files to ensure clean state for tests
-    const fs = require("fs");
-    const path = require("path");
-    const lockFile = path.join(process.cwd(), "lockouts.json");
-    const rateLimitFile = path.join(process.cwd(), "rate_limits.json");
-    if (fs.existsSync(lockFile)) {
-      try { fs.unlinkSync(lockFile); } catch (e) {}
-    }
-    if (fs.existsSync(rateLimitFile)) {
-      try { fs.unlinkSync(rateLimitFile); } catch (e) {}
-    }
+    // Tests use Prisma mock now, no file clearing needed
   });
 
   test("User Registration with Zod Password constraints and auto-hashing", async () => {

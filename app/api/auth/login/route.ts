@@ -3,23 +3,6 @@ import bcrypt from "bcryptjs";
 import { getProfileByEmail, createAuditLog } from "@/backend/lib/services/dbService";
 import { signAccessToken, signRefreshToken } from "@/backend/lib/auth/jwt";
 import { prisma } from "@/backend/lib/prisma";
-import fs from "fs";
-import path from "path";
-
-const LOCK_FILE = path.join(process.cwd(), "lockouts.json");
-
-function getLockouts() {
-  if (!fs.existsSync(LOCK_FILE)) return {};
-  try {
-    return JSON.parse(fs.readFileSync(LOCK_FILE, "utf-8"));
-  } catch (e) {
-    return {};
-  }
-}
-
-function saveLockouts(data: any) {
-  fs.writeFileSync(LOCK_FILE, JSON.stringify(data, null, 2));
-}
 
 function getIp(request: Request) {
   const forwarded = request.headers.get("x-forwarded-for");
@@ -34,13 +17,14 @@ export async function POST(request: Request) {
     const { email, password } = await request.json();
     const sanitizedEmail = (email || "").replace(/[<>]/g, "").trim().toLowerCase();
     
-    // Check global lockout list
-    const lockouts = getLockouts();
-    const lockData = lockouts[sanitizedEmail];
+    // Check global lockout list via Prisma
+    const lockData = await prisma.loginAttempt.findUnique({
+      where: { email: sanitizedEmail }
+    });
+
     if (lockData) {
-      const { attempts, lockoutUntil } = lockData;
-      if (attempts >= 5 && lockoutUntil > Date.now()) {
-        const remaining = Math.ceil((lockoutUntil - Date.now()) / 1000);
+      if (lockData.attempts >= 5 && lockData.lockoutUntil && lockData.lockoutUntil > new Date()) {
+        const remaining = Math.ceil((lockData.lockoutUntil.getTime() - Date.now()) / 1000);
         // Log failed login due to lockout
         await createAuditLog({
           userId: null,
@@ -53,9 +37,11 @@ export async function POST(request: Request) {
           { error: `Too many failed attempts. Account is locked. Try again in ${remaining}s.` },
           { status: 429 }
         );
-      } else if (lockoutUntil <= Date.now()) {
-        delete lockouts[sanitizedEmail];
-        saveLockouts(lockouts);
+      } else if (lockData.lockoutUntil && lockData.lockoutUntil <= new Date()) {
+        // Lockout expired, clear attempts
+        await prisma.loginAttempt.delete({
+          where: { email: sanitizedEmail }
+        });
       }
     }
 
@@ -64,9 +50,12 @@ export async function POST(request: Request) {
     if (!profile) {
       // Record failed attempt
       const attempts = (lockData?.attempts || 0) + 1;
-      const lockoutUntil = attempts >= 5 ? Date.now() + 15 * 60 * 1000 : 0;
-      lockouts[sanitizedEmail] = { attempts, lockoutUntil };
-      saveLockouts(lockouts);
+      const lockoutUntil = attempts >= 5 ? new Date(Date.now() + 15 * 60 * 1000) : null;
+      await prisma.loginAttempt.upsert({
+        where: { email: sanitizedEmail },
+        update: { attempts, lockoutUntil },
+        create: { email: sanitizedEmail, attempts, lockoutUntil }
+      });
 
       // Audit Log failed login
       await createAuditLog({
@@ -115,9 +104,12 @@ export async function POST(request: Request) {
     if (!passwordValid) {
       // Record failed attempt
       const attempts = (lockData?.attempts || 0) + 1;
-      const lockoutUntil = attempts >= 5 ? Date.now() + 15 * 60 * 1000 : 0;
-      lockouts[sanitizedEmail] = { attempts, lockoutUntil };
-      saveLockouts(lockouts);
+      const lockoutUntil = attempts >= 5 ? new Date(Date.now() + 15 * 60 * 1000) : null;
+      await prisma.loginAttempt.upsert({
+        where: { email: sanitizedEmail },
+        update: { attempts, lockoutUntil },
+        create: { email: sanitizedEmail, attempts, lockoutUntil }
+      });
 
       // Log failed history safely
       if (prisma.loginHistory) {
@@ -144,8 +136,9 @@ export async function POST(request: Request) {
     }
 
     // Success: clear lockout
-    delete lockouts[sanitizedEmail];
-    saveLockouts(lockouts);
+    await prisma.loginAttempt.deleteMany({
+      where: { email: sanitizedEmail }
+    });
 
     // Log successful history safely
     if (prisma.loginHistory) {
