@@ -99,7 +99,8 @@ export async function POST(request: Request) {
     }
 
     // Print verification email link to terminal console (for development/testing)
-    const verificationLink = `${process.env.NEXT_PUBLIC_APP_URL || "https://sports-fest.vercel.app"}/verify-email?token=${verificationToken}`;
+    const { origin } = new URL(request.url);
+    const verificationLink = `${origin}/verify-email?token=${verificationToken}`;
     console.log("=========================================");
     console.log("✉️ EMAIL VERIFICATION SENT TO:", sanitizedEmail);
     console.log("🔗 LINK:", verificationLink);

@@ -32,7 +32,19 @@ export async function POST(request: Request) {
       data: { resetToken, resetTokenExpiry }
     })
 
-    const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL}/reset-password?token=${resetToken}`
+    const { origin } = new URL(request.url)
+    const resetUrl = `${origin}/reset-password?token=${resetToken}`
+
+    if (!process.env.RESEND_API_KEY || process.env.RESEND_API_KEY === 'dummy') {
+      console.log('RESET PASSWORD LINK (Resend is not configured):', resetUrl);
+      return Response.json(
+        { 
+          message: 'Password reset link generated. Since no email service is configured, use the link below.',
+          resetLink: resetUrl
+        },
+        { status: 200 }
+      )
+    }
 
     const resend = new Resend(process.env.RESEND_API_KEY)
 
@@ -61,9 +73,13 @@ export async function POST(request: Request) {
 
     if (error) {
       console.error('Email error:', error)
+      // Fallback if email fails
       return Response.json(
-        { error: 'Failed to send email. Try again.' },
-        { status: 500 }
+        { 
+          message: 'Failed to send email, but link was generated.',
+          resetLink: resetUrl 
+        },
+        { status: 200 }
       )
     }
 
