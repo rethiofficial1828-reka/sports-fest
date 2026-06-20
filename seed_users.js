@@ -1,24 +1,29 @@
 const { PrismaClient } = require('@prisma/client');
-const { PrismaBetterSqlite3 } = require('@prisma/adapter-better-sqlite3');
-const Database = require('better-sqlite3');
+const { Pool } = require('pg');
+const { PrismaPg } = require('@prisma/adapter-pg');
 const bcrypt = require('bcryptjs');
 
-const adapter = new PrismaBetterSqlite3({ url: 'file:./dev.db' });
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
 async function seed() {
   const passwordHash = await bcrypt.hash('password123', 10);
   
+  const adminPasswordHash = await bcrypt.hash('OfficialAdmin@in01', 10);
   await prisma.user.upsert({
-    where: { email: 'mdgameingda@gmail.com' },
-    update: {},
+    where: { email: 'rethish2828@gmail.com' },
+    update: {
+      passwordHash: adminPasswordHash,
+      role: 'admin'
+    },
     create: {
-      email: 'mdgameingda@gmail.com',
-      passwordHash,
+      email: 'rethish2828@gmail.com',
+      passwordHash: adminPasswordHash,
       role: 'admin',
-      firstName: 'Admin',
-      lastName: 'User',
-      fullName: 'Admin User',
+      firstName: 'Official',
+      lastName: 'Admin',
+      fullName: 'Official Admin',
       isEmailVerified: true
     }
   });
