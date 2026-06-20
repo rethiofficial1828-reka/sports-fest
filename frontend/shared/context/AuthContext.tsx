@@ -68,6 +68,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(true);
     try {
       await fetch("/api/auth/session", { method: "POST" });
+      const supabase = createClient();
+      await supabase.auth.signOut();
       setUser(null);
       setRole(null);
       router.push("/login");
