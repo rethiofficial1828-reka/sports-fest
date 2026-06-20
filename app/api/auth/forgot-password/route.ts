@@ -45,6 +45,8 @@ export async function POST(request: Request) {
 
     const resend = new Resend(process.env.RESEND_API_KEY)
 
+    // NOTE: The 'from' address below must be updated to use a verified domain (e.g., info@yourdomain.com)
+    // once you verify a custom domain in the Resend dashboard (https://resend.com/domains).
     const { error } = await resend.emails.send({
       from: process.env.EMAIL_FROM || 'onboarding@resend.dev',
       to: email,
@@ -70,8 +72,14 @@ export async function POST(request: Request) {
 
     if (error) {
       console.error('Resend email API error:', error)
+      
+      const isTestingLimitError = error.message?.includes('testing emails') || error.message?.includes('own email address');
+      const errorMessage = isTestingLimitError
+        ? 'Email delivery is not yet fully configured. Please contact support.'
+        : `Failed to send password reset email: ${error.message || 'Unknown error'}`;
+
       return Response.json(
-        { error: `Failed to send password reset email: ${error.message || 'Unknown error'}` },
+        { error: errorMessage },
         { status: 500 }
       )
     }
