@@ -75,8 +75,15 @@ const FEATURES = [
 
 const TEAM_MEMBERS = [
   {
+    name: "Rethish S",
+    role: "Founder & Developer",
+    desc: "Cyber Security Student at Nehru Institute of Technology, passionate about ethical hacking, secure application development, and building innovative digital solutions.",
+    image: "/images/rethish.jpg",
+    email: "rethiofficial1828@gmail.com",
+  },
+  {
     name: "Dr. Vikram Sethi",
-    role: "Chief Athletic Director",
+    role: "Chief Advisory Director",
     desc: "Former national decathlete with 20+ years of sports administration experience. Oversees university collaborations.",
     image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&q=80",
     email: "vikram.sethi@sportsfest.in",
@@ -87,13 +94,6 @@ const TEAM_MEMBERS = [
     desc: "Specialist in tournament scheduling and inter-state college logistics. Ensures high-standard rulebook compliance.",
     image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&q=80",
     email: "meera.nair@sportsfest.in",
-  },
-  {
-    name: "Aarav Sharma",
-    role: "Student Tech President",
-    desc: "Developer and sports enthusiast. Created the initial SportsFest engine to solve scheduling overlap problems.",
-    image: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&q=80",
-    email: "aarav.sharma@sportsfest.in",
   },
 ];
 
