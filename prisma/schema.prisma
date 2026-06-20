@@ -1,0 +1,257 @@
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id                        String         @id @default(uuid())
+  email                     String         @unique
+  passwordHash              String?
+  role                      String         @default("student") // student, organizer, admin
+  firstName                 String?
+  lastName                  String?
+  fullName                  String?
+  institution               String?
+  phone                     String?
+  department                String?
+  yearOfStudy               Int?
+  avatarUrl                 String?
+  isBlocked                 Boolean        @default(false)
+  isEmailVerified           Boolean        @default(false)
+  twoFactorEnabled          Boolean        @default(false)
+  twoFactorSecret           String?
+  verificationToken         String?
+  verificationTokenExpires  DateTime?
+  passwordResetToken        String?
+  passwordResetExpires      DateTime?
+  resetToken                String?
+  resetTokenExpiry          DateTime?
+  joinedDate                String?
+  createdAt                 DateTime       @default(now())
+  updatedAt                 DateTime       @updatedAt
+  
+  registrations             Registration[]
+  events                    Event[]        @relation("OrganizerEvents")
+  approvedEvents            Event[]        @relation("ApprovedEvents")
+  auditLogs                 AuditLog[]
+  sessions                  Session[]
+  loginHistories            LoginHistory[]
+  attendances               Attendance[]
+
+  @@index([email])
+}
+
+model College {
+  id         String   @id @default(uuid())
+  name       String   @unique
+  slug       String   @unique
+  shortName  String?
+  city       String
+  state      String
+  isVerified Boolean  @default(false)
+  eventsCount Int     @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  
+  events     Event[]
+
+  @@index([slug])
+}
+
+model Event {
+  id                   String         @id @default(uuid())
+  slug                 String         @unique
+  title                String
+  description          String
+  organizerId          String
+  organizer            User           @relation("OrganizerEvents", fields: [organizerId], references: [id], onDelete: Cascade)
+  collegeId            String?
+  college              College?       @relation(fields: [collegeId], references: [id], onDelete: SetNull)
+  sportName            String
+  sportIcon            String
+  sportColor           String
+  eventDate            DateTime
+  registrationDeadline DateTime
+  mode                 String         @default("offline") // offline, online, hybrid
+  fee                  Int            @default(0)
+  posterUrl            String
+  isLive               Boolean        @default(true)
+  isCancelled          Boolean        @default(false)
+  status               String         @default("pending") // draft, pending, approved, rejected, published, completed, cancelled
+  isFeatured           Boolean        @default(false)
+  participantCount     Int            @default(0)
+  maxParticipants      Int            @default(100) // Capacity limit
+  level                String         @default("zonal") // zonal, state, national, invitational
+  registrationUrl      String?
+  rejectionReason      String?
+  approvedById         String?
+  approvedBy           User?          @relation("ApprovedEvents", fields: [approvedById], references: [id], onDelete: SetNull)
+  views                Int            @default(0)
+  attendanceCount      Int            @default(0)
+  isCompleted          Boolean        @default(false)
+  
+  // Extended fields for details, prizes, rules, contacts, team rules, downloads
+  category             String?
+  location             String?
+  minParticipants      Int            @default(1)
+  isTeamEvent          Boolean        @default(false)
+  teamSize             Int            @default(1)
+  minTeamSize          Int            @default(1)
+  maxTeamSize          Int            @default(1)
+  
+  prizePool            Int            @default(0)
+  prizeFirst           String?
+  prizeSecond          String?
+  prizeThird           String?
+  rewardsAdditional    String?
+  trophyInfo           String?
+  certificateInfo      String?
+
+  rules                String?
+  eligibility          String?
+  rulesTeam            String?
+  equipmentRequirements String?
+  conductRules         String?
+  disqualificationConditions String?
+
+  contactName          String?
+  contactEmail         String?
+  contactPhone         String?
+  contactAlternatePhone String?
+  collegeName          String?
+
+  rulebookUrl          String?
+  brochureUrl          String?
+
+  createdAt            DateTime       @default(now())
+  updatedAt            DateTime       @updatedAt
+  
+  registrations        Registration[]
+  waitlists            Waitlist[]
+  attendances          Attendance[]
+
+  @@index([slug])
+  @@index([status])
+}
+
+model Registration {
+  id               String   @id @default(uuid())
+  eventId          String
+  event            Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  userId           String
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userName         String
+  userEmail        String
+  college          String
+  date             String
+  createdAt        DateTime @default(now())
+
+  @@unique([eventId, userId])
+  @@index([eventId])
+  @@index([userId])
+}
+
+model Waitlist {
+  id        String   @id @default(uuid())
+  eventId   String
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  userId    String
+  userName  String
+  userEmail String
+  college   String
+  createdAt DateTime @default(now())
+
+  @@index([eventId])
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String   @default("all") // "all" or specific user ID
+  text      String
+  date      String
+  isRead    Boolean  @default(false)
+  type      String   @default("system")
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+model Verification {
+  id          String   @id @default(uuid())
+  collegeName String
+  requester   String
+  email       String
+  phone       String
+  date        String
+  status      String   @default("pending") // pending, approved, rejected
+  createdAt   DateTime @default(now())
+}
+
+model AuditLog {
+  id         String   @id @default(uuid())
+  userId     String?
+  user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  action     String
+  timestamp  DateTime @default(now())
+  ipAddress  String?
+  deviceInfo String?
+  createdAt  DateTime @default(now())
+
+  @@index([userId])
+}
+
+model Report {
+  id          String   @id @default(uuid())
+  eventId     String
+  eventTitle  String
+  reporter    String
+  reason      String
+  date        String
+  status      String   @default("active")
+  createdAt   DateTime @default(now())
+}
+
+model Session {
+  id        String    @id @default(uuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userAgent String?
+  ipAddress String?
+  isTrusted Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  expiresAt DateTime
+  revokedAt DateTime?
+
+  @@index([userId])
+}
+
+model LoginHistory {
+  id        String   @id @default(uuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  ipAddress String?
+  userAgent String?
+  status    String   // success, failed
+  reason    String?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+model Attendance {
+  id          String   @id @default(uuid())
+  eventId     String
+  event       Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  checkedInAt DateTime @default(now())
+
+  @@unique([eventId, userId])
+  @@index([eventId])
+  @@index([userId])
+}
+
+

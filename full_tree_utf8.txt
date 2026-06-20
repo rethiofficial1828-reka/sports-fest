@@ -1,0 +1,148 @@
+sports-fest/
+├── app
+│   ├── (auth)
+│   │   ├── login
+│   │   ├── register
+│   │   ├── reset-password
+│   │   └── verify-email
+│   ├── (public)
+│   │   ├── about
+│   │   ├── events
+│   │   │   └── [slug]
+│   │   └── sport
+│   │       └── [category]
+│   ├── admin
+│   │   ├── approvals
+│   │   ├── audit-logs
+│   │   ├── settings
+│   │   └── users
+│   ├── api
+│   │   ├── admin
+│   │   │   ├── analytics
+│   │   │   ├── audit-logs
+│   │   │   ├── colleges
+│   │   │   ├── reports
+│   │   │   ├── users
+│   │   │   └── verifications
+│   │   ├── auth
+│   │   │   ├── 2fa
+│   │   │   ├── forgot-password
+│   │   │   ├── login
+│   │   │   ├── register
+│   │   │   ├── reset-password
+│   │   │   ├── session
+│   │   │   ├── sessions
+│   │   │   └── verify-email
+│   │   ├── events
+│   │   │   ├── certificates
+│   │   │   ├── checkin
+│   │   │   └── qr
+│   │   ├── health
+│   │   ├── notifications
+│   │   │   └── stream
+│   │   ├── organizer
+│   │   │   └── analytics
+│   │   └── registrations
+│   ├── auth
+│   │   └── callback
+│   └── organizer
+│       ├── create-event
+│       ├── dashboard
+│       ├── settings
+│       └── tournaments
+├── backend
+│   ├── api
+│   │   ├── admin
+│   │   │   ├── dashboard
+│   │   │   ├── events
+│   │   │   ├── sports
+│   │   │   └── users
+│   │   ├── auth
+│   │   │   ├── callback
+│   │   │   ├── forgot-password
+│   │   │   ├── login
+│   │   │   ├── logout
+│   │   │   ├── register
+│   │   │   └── reset-password
+│   │   ├── organizer
+│   │   │   ├── events
+│   │   │   ├── results
+│   │   │   └── teams
+│   │   ├── public
+│   │   │   ├── events
+│   │   │   └── sports
+│   │   └── student
+│   │       ├── profile
+│   │       ├── registration
+│   │       └── results
+│   ├── lib
+│   │   ├── auth
+│   │   ├── constants
+│   │   ├── email
+│   │   │   └── templates
+│   │   ├── services
+│   │   ├── supabase
+│   │   └── utils
+│   ├── middleware
+│   └── prisma
+├── frontend
+│   ├── admin
+│   │   ├── components
+│   │   ├── hooks
+│   │   └── pages
+│   │       ├── approvals
+│   │       ├── audit-logs
+│   │       ├── dashboard
+│   │       ├── events
+│   │       ├── settings
+│   │       ├── sports
+│   │       └── users
+│   ├── auth
+│   │   ├── login
+│   │   ├── register
+│   │   └── reset-password
+│   ├── organizer
+│   │   ├── components
+│   │   ├── hooks
+│   │   └── pages
+│   │       ├── dashboard
+│   │       ├── events
+│   │       │   ├── create
+│   │       │   └── list
+│   │       ├── results
+│   │       ├── settings
+│   │       └── teams
+│   ├── shared
+│   │   ├── components
+│   │   │   ├── auth
+│   │   │   ├── events
+│   │   │   ├── home
+│   │   │   ├── layout
+│   │   │   └── ui
+│   │   ├── context
+│   │   ├── hooks
+│   │   ├── types
+│   │   └── utils
+│   │       └── supabase
+│   └── student
+│       ├── components
+│       ├── hooks
+│       └── pages
+│           ├── about
+│           ├── dashboard
+│           ├── events
+│           │   ├── detail
+│           │   └── list
+│           ├── home
+│           ├── profile
+│           ├── registration
+│           ├── results
+│           └── sport
+│               └── category
+├── prisma
+├── public
+│   └── images
+├── supabase
+│   └── migrations
+├── __mocks__
+└── __tests__

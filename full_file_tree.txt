@@ -1,0 +1,290 @@
+sports-fest/
+├── __mocks__
+│   └── prisma.js
+├── __tests__
+│   ├── api.test.ts
+│   ├── auth.test.ts
+│   ├── events.test.ts
+│   └── workflows.test.ts
+├── app
+│   ├── (auth)
+│   │   ├── login
+│   │   │   └── page.tsx
+│   │   ├── register
+│   │   │   └── page.tsx
+│   │   ├── reset-password
+│   │   │   └── page.tsx
+│   │   └── verify-email
+│   │       └── page.tsx
+│   ├── (public)
+│   │   ├── about
+│   │   │   └── page.tsx
+│   │   ├── events
+│   │   │   ├── [slug]
+│   │   │   │   └── page.tsx
+│   │   │   └── page.tsx
+│   │   ├── sport
+│   │   │   └── [category]
+│   │   │       └── page.tsx
+│   │   ├── layout.tsx
+│   │   └── page.tsx
+│   ├── admin
+│   │   ├── approvals
+│   │   │   └── page.tsx
+│   │   ├── audit-logs
+│   │   │   └── page.tsx
+│   │   ├── settings
+│   │   │   └── page.tsx
+│   │   ├── users
+│   │   │   └── page.tsx
+│   │   ├── layout.tsx
+│   │   └── page.tsx
+│   ├── api
+│   │   ├── admin
+│   │   │   ├── analytics
+│   │   │   │   └── route.ts
+│   │   │   ├── audit-logs
+│   │   │   │   └── route.ts
+│   │   │   ├── colleges
+│   │   │   │   └── route.ts
+│   │   │   ├── reports
+│   │   │   │   └── route.ts
+│   │   │   ├── users
+│   │   │   │   └── route.ts
+│   │   │   └── verifications
+│   │   │       └── route.ts
+│   │   ├── auth
+│   │   │   ├── 2fa
+│   │   │   │   └── route.ts
+│   │   │   ├── forgot-password
+│   │   │   │   └── route.ts
+│   │   │   ├── login
+│   │   │   │   └── route.ts
+│   │   │   ├── register
+│   │   │   │   └── route.ts
+│   │   │   ├── reset-password
+│   │   │   │   └── route.ts
+│   │   │   ├── session
+│   │   │   │   └── route.ts
+│   │   │   ├── sessions
+│   │   │   │   └── route.ts
+│   │   │   └── verify-email
+│   │   │       └── route.ts
+│   │   ├── events
+│   │   │   ├── certificates
+│   │   │   │   └── route.ts
+│   │   │   ├── checkin
+│   │   │   │   └── route.ts
+│   │   │   ├── qr
+│   │   │   │   └── route.ts
+│   │   │   └── route.ts
+│   │   ├── health
+│   │   │   └── route.ts
+│   │   ├── notifications
+│   │   │   ├── stream
+│   │   │   │   └── route.ts
+│   │   │   └── route.ts
+│   │   ├── organizer
+│   │   │   └── analytics
+│   │   │       └── route.ts
+│   │   └── registrations
+│   │       └── route.ts
+│   ├── auth
+│   │   └── callback
+│   │       └── route.ts
+│   ├── organizer
+│   │   ├── create-event
+│   │   │   └── page.tsx
+│   │   ├── dashboard
+│   │   │   └── page.tsx
+│   │   ├── settings
+│   │   │   └── page.tsx
+│   │   ├── tournaments
+│   │   │   └── page.tsx
+│   │   └── layout.tsx
+│   ├── favicon.ico
+│   ├── globals.css
+│   └── layout.tsx
+├── backend
+│   ├── api
+│   │   ├── admin
+│   │   │   ├── dashboard
+│   │   │   ├── events
+│   │   │   ├── sports
+│   │   │   └── users
+│   │   ├── auth
+│   │   │   ├── callback
+│   │   │   ├── forgot-password
+│   │   │   ├── login
+│   │   │   ├── logout
+│   │   │   ├── register
+│   │   │   └── reset-password
+│   │   ├── organizer
+│   │   │   ├── events
+│   │   │   ├── results
+│   │   │   └── teams
+│   │   ├── public
+│   │   │   ├── events
+│   │   │   └── sports
+│   │   └── student
+│   │       ├── profile
+│   │       ├── registration
+│   │       └── results
+│   ├── lib
+│   │   ├── auth
+│   │   │   └── jwt.ts
+│   │   ├── constants
+│   │   │   ├── cities.ts
+│   │   │   └── sports.ts
+│   │   ├── email
+│   │   │   └── templates
+│   │   ├── services
+│   │   │   └── dbService.ts
+│   │   ├── supabase
+│   │   │   ├── client.ts
+│   │   │   ├── middleware.ts
+│   │   │   └── server.ts
+│   │   ├── utils
+│   │   │   ├── cn.ts
+│   │   │   ├── csrf.ts
+│   │   │   ├── date.ts
+│   │   │   └── rateLimit.ts
+│   │   ├── mock-data.ts
+│   │   └── prisma.ts
+│   ├── middleware
+│   └── prisma
+│       └── schema.prisma
+├── frontend
+│   ├── admin
+│   │   ├── components
+│   │   │   └── layout.tsx
+│   │   ├── hooks
+│   │   └── pages
+│   │       ├── approvals
+│   │       │   └── page.tsx
+│   │       ├── audit-logs
+│   │       │   └── page.tsx
+│   │       ├── dashboard
+│   │       │   └── page.tsx
+│   │       ├── events
+│   │       ├── settings
+│   │       │   └── page.tsx
+│   │       ├── sports
+│   │       └── users
+│   │           └── page.tsx
+│   ├── auth
+│   │   ├── login
+│   │   │   └── page.tsx
+│   │   ├── register
+│   │   │   └── page.tsx
+│   │   └── reset-password
+│   ├── organizer
+│   │   ├── components
+│   │   │   └── layout.tsx
+│   │   ├── hooks
+│   │   └── pages
+│   │       ├── dashboard
+│   │       │   └── page.tsx
+│   │       ├── events
+│   │       │   ├── create
+│   │       │   │   └── page.tsx
+│   │       │   └── list
+│   │       │       └── page.tsx
+│   │       ├── results
+│   │       ├── settings
+│   │       │   └── page.tsx
+│   │       └── teams
+│   ├── shared
+│   │   ├── components
+│   │   │   ├── auth
+│   │   │   ├── events
+│   │   │   │   └── EventCard.tsx
+│   │   │   ├── home
+│   │   │   │   ├── CollegeMarquee.tsx
+│   │   │   │   ├── FeaturedEvents.tsx
+│   │   │   │   ├── HeroBanner.tsx
+│   │   │   │   ├── SportsCategoryGrid.tsx
+│   │   │   │   ├── StatsBar.tsx
+│   │   │   │   └── UpcomingEvents.tsx
+│   │   │   ├── layout
+│   │   │   │   ├── CancellationAnnouncements.tsx
+│   │   │   │   ├── Footer.tsx
+│   │   │   │   ├── MobileFAB.tsx
+│   │   │   │   ├── Navbar.tsx
+│   │   │   │   └── PublicLayout.tsx
+│   │   │   └── ui
+│   │   ├── context
+│   │   │   ├── AuthContext.tsx
+│   │   │   ├── EventContext.tsx
+│   │   │   └── QueryProvider.tsx
+│   │   ├── hooks
+│   │   ├── types
+│   │   │   ├── event.types.ts
+│   │   │   └── user.types.ts
+│   │   └── utils
+│   │       └── supabase
+│   │           └── client.ts
+│   └── student
+│       ├── components
+│       ├── hooks
+│       └── pages
+│           ├── about
+│           │   └── page.tsx
+│           ├── dashboard
+│           ├── events
+│           │   ├── detail
+│           │   │   └── page.tsx
+│           │   └── list
+│           │       └── page.tsx
+│           ├── home
+│           │   └── page.tsx
+│           ├── profile
+│           ├── registration
+│           ├── results
+│           └── sport
+│               └── category
+│                   └── page.tsx
+├── prisma
+│   └── schema.prisma
+├── public
+│   ├── images
+│   │   └── hero-3d.png
+│   ├── file.svg
+│   ├── globe.svg
+│   ├── hero-3d.png
+│   ├── next.svg
+│   ├── vercel.svg
+│   └── window.svg
+├── supabase
+│   └── migrations
+│       ├── 001_initial_schema.sql
+│       ├── 002_indexes_fts.sql
+│       ├── 003_rls_policies.sql
+│       ├── 004_triggers_functions.sql
+│       └── 005_seed_data.sql
+├── .env
+├── .env.example
+├── .env.local
+├── .gitignore
+├── dev.db
+├── eslint.config.mjs
+├── full_tree_utf8.txt
+├── full_tree.txt
+├── genSummary.js
+├── jest.config.ts
+├── jest.env.js
+├── jest.setup.ts
+├── lockouts.json
+├── middleware.ts
+├── next-env.d.ts
+├── next.config.ts
+├── package-lock.json
+├── package.json
+├── postcss.config.mjs
+├── prisma.config.ts
+├── rate_limits.json
+├── README.md
+├── seed_users.js
+├── tailwind.config.ts
+├── tsconfig.json
+└── tsconfig.tsbuildinfo
