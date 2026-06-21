@@ -9,6 +9,22 @@ export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url)
   const code = searchParams.get('code')
   const next = searchParams.get('next') ?? '/dashboard'
+  
+  // Catch Supabase OAuth errors passed in the URL
+  const errorParam = searchParams.get('error')
+  const errorDescription = searchParams.get('error_description')
+
+  if (errorParam || errorDescription) {
+    console.error('OAuth redirect error:', errorParam, errorDescription)
+    const desc = (errorDescription || errorParam || '').toLowerCase()
+    
+    // Supabase returns these when an email exists but linking is disabled
+    if (desc.includes('already registered') || desc.includes('different provider') || desc.includes('database error') || desc.includes('user_already_exists')) {
+      return NextResponse.redirect(`${origin}/login?error=account_exists`)
+    }
+    
+    return NextResponse.redirect(`${origin}/login?error=${encodeURIComponent(errorDescription || 'Authentication failed')}`)
+  }
 
   if (code) {
     const cookieStore = await cookies()
@@ -115,5 +131,31 @@ export async function GET(request: Request) {
     }
   }
 
-  return NextResponse.redirect(`${origin}/login?error=Could not authenticate user`)
+  // If no code and no error in query params, it might be in the URL hash fragment.
+  // Next.js server routes cannot read hash fragments, so we return a tiny HTML script to catch it.
+  return new NextResponse(`
+    <html>
+      <body>
+        <script>
+          var hash = window.location.hash;
+          var search = window.location.search;
+          if (hash && hash.includes('error=')) {
+            var params = new URLSearchParams(hash.substring(1));
+            var err = params.get('error_description') || params.get('error') || '';
+            var desc = err.toLowerCase();
+            
+            if (desc.includes('already registered') || desc.includes('different provider') || desc.includes('database error') || desc.includes('user_already_exists')) {
+              window.location.href = '/login?error=account_exists';
+            } else {
+              window.location.href = '/login?error=' + encodeURIComponent(err || 'Authentication failed');
+            }
+          } else {
+            window.location.href = '/login?error=Could not authenticate user';
+          }
+        </script>
+      </body>
+    </html>
+  `, {
+    headers: { 'Content-Type': 'text/html' }
+  });
 }
