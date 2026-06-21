@@ -34,13 +34,9 @@ export default function ResetPasswordPage() {
   const [isValidatingSession, setIsValidatingSession] = useState(true);
 
   useEffect(() => {
-    // Only allow access if they completed the OTP step
-    if (step !== "reset") {
-      router.push("/forgot-password");
-    } else {
-      setIsValidatingSession(false);
-    }
-  }, [step, router]);
+    // We rely on the secure HTTP-only cookie to protect the final submission
+    setIsValidatingSession(false);
+  }, []);
 
   const form = useForm<ResetFormValues>({
     resolver: zodResolver(resetSchema),
