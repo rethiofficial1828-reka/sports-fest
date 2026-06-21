@@ -37,7 +37,7 @@ export default function ResetPasswordPage() {
     // Strict Backend Check: Verify the secure session cookie
     const checkSession = async () => {
       try {
-        const res = await fetch("/api/auth/check-session");
+        const res = await fetch("/api/auth/check-session", { cache: "no-store" });
         const data = await res.json();
         
         if (!data.valid) {
