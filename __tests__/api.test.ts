@@ -265,6 +265,40 @@ jest.mock("@/backend/lib/prisma", () => {
       findUnique: jest.fn().mockImplementation(async (args: any) => (mockDb.attendances || []).find((a: any) => a.eventId === args?.where?.eventId_userId?.eventId && a.userId === args?.where?.eventId_userId?.userId) || null),
     },
     auditLog: { create: jest.fn().mockResolvedValue({}) },
+    loginAttempt: {
+      findUnique: jest.fn().mockImplementation(async (args: any) => {
+        return mockDb.loginAttempts?.find((la: any) => la.email === args?.where?.email) || null;
+      }),
+      delete: jest.fn().mockImplementation(async (args: any) => {
+        mockDb.loginAttempts = (mockDb.loginAttempts || []).filter((la: any) => la.email !== args?.where?.email);
+        return {};
+      }),
+      deleteMany: jest.fn().mockImplementation(async (args: any) => {
+        mockDb.loginAttempts = (mockDb.loginAttempts || []).filter((la: any) => la.email !== args?.where?.email);
+        return {};
+      }),
+      upsert: jest.fn().mockImplementation(async (args: any) => {
+        const email = args?.where?.email;
+        mockDb.loginAttempts = mockDb.loginAttempts || [];
+        let record = mockDb.loginAttempts.find((la: any) => la.email === email);
+        if (record) {
+          record.attempts = args.update.attempts;
+          record.lockoutUntil = args.update.lockoutUntil;
+        } else {
+          record = { email, attempts: args.create.attempts, lockoutUntil: args.create.lockoutUntil };
+          mockDb.loginAttempts.push(record);
+        }
+        return record;
+      }),
+    },
+    rateLimit: {
+      upsert: jest.fn().mockImplementation(async (args: any) => {
+        return { key: args.where.key, count: 1, resetTime: new Date(Date.now() + 60000) };
+      }),
+      update: jest.fn().mockImplementation(async (args: any) => {
+        return { count: 1, resetTime: new Date(Date.now() + 60000) };
+      }),
+    },
     $transaction: jest.fn(async (cb: any) => await cb(mock)),
   };
   return { prisma: mock };

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { createProfile, getProfileByEmail, createVerification, createAuditLog } from "@/backend/lib/services/dbService";
 import { generateCsrfToken } from "@/backend/lib/utils/csrf";
+import { Resend } from "resend";
 
 function getIp(request: Request) {
   const forwarded = request.headers.get("x-forwarded-for");
@@ -105,6 +106,37 @@ export async function POST(request: Request) {
     console.log("✉️ EMAIL VERIFICATION SENT TO:", sanitizedEmail);
     console.log("🔗 LINK:", verificationLink);
     console.log("=========================================");
+
+    // Send verification email using Resend
+    if (process.env.RESEND_API_KEY && process.env.RESEND_API_KEY !== 'dummy') {
+      try {
+        const resend = new Resend(process.env.RESEND_API_KEY);
+        await resend.emails.send({
+          from: process.env.EMAIL_FROM || 'onboarding@resend.dev',
+          to: sanitizedEmail,
+          subject: 'Verify Your Email Address - SportsFest',
+          html: `
+            <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;border:1px solid #e2e8f0;border-radius:12px;">
+              <h2 style="color:#7C3AED;margin-top:0;">Verify Your Email Address</h2>
+              <p>Hello ${firstName || 'there'},</p>
+              <p>Thank you for signing up for SportsFest. To activate your account and start discovering or hosting sports events, please verify your email address by clicking the link below:</p>
+              <a href="${verificationLink}"
+                 style="background:#7C3AED;color:white;padding:12px 24px;
+                        text-decoration:none;border-radius:6px;
+                        display:inline-block;margin:20px 0;font-weight:bold;">
+                Verify Email Address
+              </a>
+              <p style="font-size:12px;color:#64748b;">If the button above does not work, copy and paste this URL into your web browser:</p>
+              <p style="font-size:12px;color:#3b82f6;word-break:break-all;">${verificationLink}</p>
+              <p>This verification link is valid for 24 hours.</p>
+              <p style="margin-bottom:0;">Thanks,<br>The SportsFest Team</p>
+            </div>
+          `
+        });
+      } catch (err) {
+        console.error("Failed to send verification email via Resend:", err);
+      }
+    }
 
     return NextResponse.json({
       success: true,

@@ -37,7 +37,7 @@ export default function Footer() {
             <h3 className="font-semibold text-[#111827] mb-6">Explore</h3>
             <ul className="space-y-4 text-sm text-slate-500">
               <li><Link href="/events" className="hover:text-[#6B46C1] transition-colors">All Tournaments</Link></li>
-              <li><Link href="/dashboard" className="hover:text-[#6B46C1] transition-colors">Host an Event</Link></li>
+              <li><Link href="/organizer/dashboard" className="hover:text-[#6B46C1] transition-colors">Host an Event</Link></li>
               <li><Link href="/leaderboard" className="hover:text-[#6B46C1] transition-colors">College Leaderboard</Link></li>
               <li><Link href="/rules" className="hover:text-[#6B46C1] transition-colors">Standard Rules</Link></li>
             </ul>

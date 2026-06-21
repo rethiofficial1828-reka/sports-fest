@@ -246,7 +246,7 @@ export default function AboutPage() {
           </p>
         </div>
 
-        <div className="flex justify-center">
+        <div className="flex justify-center mt-12">
           {TEAM_MEMBERS.map((member, i) => (
             <motion.div
               key={member.name}
@@ -254,29 +254,34 @@ export default function AboutPage() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.15 }}
-              className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm hover:shadow-lg transition-all flex flex-col justify-between group max-w-md w-full"
+              className="bg-white border border-slate-200 rounded-[2rem] p-4 shadow-xl hover:shadow-2xl transition-all flex flex-col group max-w-sm w-full"
             >
-              <div className="space-y-6">
-                <div className="relative w-full aspect-square rounded-2xl overflow-hidden bg-slate-100 border border-slate-200/50">
-                  <img 
-                    src={member.image} 
-                    alt={member.name}
-                    className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500" 
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <h3 className="text-xl font-bold text-[#111827]">{member.name}</h3>
-                  <p className="text-sm font-extrabold text-[#6B46C1] uppercase tracking-wider">{member.role}</p>
-                  <p className="text-slate-500 text-sm font-medium leading-relaxed">{member.desc}</p>
+              <div className="relative w-full aspect-[4/5] rounded-3xl overflow-hidden bg-slate-100 mb-6">
+                <img 
+                  src={member.image} 
+                  alt={member.name}
+                  className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-700" 
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent" />
+                <div className="absolute bottom-6 left-6 right-6">
+                  <h3 className="text-2xl font-bold text-white mb-1">{member.name}</h3>
+                  <span className="inline-block px-3 py-1 bg-indigo-500/90 backdrop-blur-sm text-white text-xs font-bold uppercase tracking-wider rounded-full">
+                    {member.role}
+                  </span>
                 </div>
               </div>
-
-              <div className="pt-6 mt-6 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-[#6B46C1] hover:text-[#553C9A] transition-colors">
-                <span className="flex items-center gap-2">
-                  <Mail className="w-4 h-4 text-slate-400" />
-                  {member.email}
-                </span>
+              
+              <div className="px-4 pb-4 flex-1 flex flex-col justify-between">
+                <p className="text-slate-600 text-sm font-medium leading-relaxed mb-6">
+                  {member.desc}
+                </p>
+                
+                <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-sm font-bold text-indigo-600 hover:text-indigo-700 transition-colors">
+                  <a href={`mailto:${member.email}`} className="flex items-center gap-2">
+                    <Mail className="w-4 h-4" />
+                    {member.email}
+                  </a>
+                </div>
               </div>
             </motion.div>
           ))}

@@ -113,7 +113,7 @@ export default function RegisterPage() {
         if (data.role === "student") {
           window.location.href = "/";
         } else {
-          window.location.href = "/dashboard";
+          window.location.href = "/organizer/dashboard";
         }
       } else {
         router.push("/login");

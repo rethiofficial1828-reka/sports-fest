@@ -63,7 +63,7 @@ export default function DashboardPage() {
               : `Coordinator workspace for ${userInstitution}.`}
           </p>
         </div>
-        <Link href="/create-event" className="btn-primary flex items-center justify-center gap-2 shadow-md">
+        <Link href="/organizer/create-event" className="btn-primary flex items-center justify-center gap-2 shadow-md">
           <Plus className="w-5 h-5" />
           Create Event
         </Link>
@@ -95,7 +95,7 @@ export default function DashboardPage() {
       <div>
         <div className="flex items-center justify-between mb-6">
           <h2 className="font-display text-xl font-bold text-[#111827]">Your Active Listings</h2>
-          <Link href="/tournaments" className="text-sm font-semibold text-[#6B46C1] hover:text-[#553C9A]">
+          <Link href="/organizer/tournaments" className="text-sm font-semibold text-[#6B46C1] hover:text-[#553C9A]">
             View all fests
           </Link>
         </div>
@@ -115,7 +115,7 @@ export default function DashboardPage() {
               <tbody className="divide-y divide-slate-100 bg-white">
                 {collegeEvents.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="p-8 text-center text-slate-405 font-medium">
+                    <td colSpan={5} className="p-8 text-center text-slate-400 font-medium">
                       No fests listed yet. Start by creating an event!
                     </td>
                   </tr>

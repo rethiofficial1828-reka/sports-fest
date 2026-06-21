@@ -156,7 +156,8 @@ export async function middleware(request: NextRequest) {
   const isProtectedPath = 
     pathname.startsWith("/admin") ||
     pathname.startsWith("/organizer") ||
-    pathname.startsWith("/student");
+    pathname.startsWith("/student") ||
+    pathname === "/dashboard";
 
   if (isProtectedPath && !user) {
     const url = request.nextUrl.clone();
@@ -167,6 +168,18 @@ export async function middleware(request: NextRequest) {
   if (user) {
     const role = user.role || "student";
     
+    if (pathname === "/dashboard") {
+      const url = request.nextUrl.clone();
+      if (role === "admin") {
+        url.pathname = "/admin";
+      } else if (role === "organizer") {
+        url.pathname = "/organizer/dashboard";
+      } else {
+        url.pathname = "/";
+      }
+      return NextResponse.redirect(url);
+    }
+
     if (pathname.startsWith("/admin") && role !== "admin") {
       const url = request.nextUrl.clone();
       url.pathname = "/";

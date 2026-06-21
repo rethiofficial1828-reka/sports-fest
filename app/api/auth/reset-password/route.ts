@@ -90,6 +90,8 @@ export async function POST(request: Request) {
         passwordHash,
         resetToken: null,
         resetTokenExpiry: null,
+        passwordResetToken: null,
+        passwordResetExpires: null,
       }
     });
 

@@ -91,7 +91,18 @@ export async function GET(request: Request) {
 
         cookieStore.set("session", "true", { path: "/" });
 
-        return NextResponse.redirect(`${origin}${next}`)
+        let targetNext = next;
+        if (targetNext === '/dashboard') {
+          if (userProfile.role === 'admin') {
+            targetNext = '/admin';
+          } else if (userProfile.role === 'organizer') {
+            targetNext = '/organizer/dashboard';
+          } else {
+            targetNext = '/';
+          }
+        }
+
+        return NextResponse.redirect(`${origin}${targetNext}`)
       }
     } else {
       console.error('OAuth callback error:', error)

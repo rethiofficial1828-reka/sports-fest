@@ -278,7 +278,7 @@ export default function CreateEventPage() {
       await addEvent(newEventData as any);
 
       alert("Event created and published successfully!");
-      router.push("/tournaments");
+      router.push("/organizer/tournaments");
     } catch (error: any) {
       console.error(error);
       alert(error.message || "An unexpected error occurred while creating the event.");

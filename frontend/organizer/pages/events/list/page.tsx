@@ -66,7 +66,7 @@ export default function TournamentsPage() {
           </h1>
           <p className="text-slate-500 font-medium mt-1">Manage and track your sports events.</p>
         </div>
-        <Link href="/create-event" className="btn-primary flex items-center justify-center gap-2 shadow-md">
+        <Link href="/organizer/create-event" className="btn-primary flex items-center justify-center gap-2 shadow-md">
           <Plus className="w-5 h-5" />
           Create Event
         </Link>
@@ -100,7 +100,7 @@ export default function TournamentsPage() {
             <tbody className="divide-y divide-slate-100 bg-white">
               {filteredEvents.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-6 py-10 text-center text-slate-505 font-medium">
+                  <td colSpan={5} className="px-6 py-10 text-center text-slate-500 font-medium">
                     No tournaments found. Start by creating one!
                   </td>
                 </tr>
@@ -124,13 +124,13 @@ export default function TournamentsPage() {
                     </td>
                     <td className="px-6 py-4">
                       {event.isCancelled ? (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-red-50 text-red-650 border border-red-200 text-[10px] font-bold uppercase rounded-xl">
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-red-50 text-red-600 border border-red-200 text-[10px] font-bold uppercase rounded-xl">
                           <AlertCircle className="w-3.5 h-3.5" /> Cancelled
                         </span>
                       ) : event.isLive ? (
                         <span className="badge badge-live">Live</span>
                       ) : (
-                        <span className="badge bg-amber-50 text-amber-700 border-amber-255 text-[10px] font-bold uppercase rounded-xl">Registration Open</span>
+                        <span className="badge bg-amber-50 text-amber-700 border-amber-200 text-[10px] font-bold uppercase rounded-xl">Registration Open</span>
                       )}
                     </td>
                     <td className="px-6 py-4">
@@ -138,7 +138,7 @@ export default function TournamentsPage() {
                         <div className="w-full bg-slate-100 rounded-full h-1.5 max-w-[100px]">
                           <div className="bg-[#6B46C1] h-1.5 rounded-full" style={{ width: `${Math.min(100, (event.participantCount / 300) * 100)}%` }}></div>
                         </div>
-                        <span className="font-bold text-slate-750">{event.participantCount}</span>
+                        <span className="font-bold text-slate-700">{event.participantCount}</span>
                       </div>
                     </td>
                     <td className="px-6 py-4 text-slate-500 font-bold flex items-center gap-1.5">
@@ -149,7 +149,7 @@ export default function TournamentsPage() {
                       <div className="flex items-center justify-end gap-2">
                         <Link 
                           href={`/events/${event.slug}`} 
-                          className="px-3.5 py-2 border border-slate-200 hover:border-slate-300 text-slate-605 text-xs font-bold rounded-xl bg-white hover:bg-slate-50 transition-all shadow-sm"
+                          className="px-3.5 py-2 border border-slate-200 hover:border-slate-300 text-slate-600 text-xs font-bold rounded-xl bg-white hover:bg-slate-50 transition-all shadow-sm"
                         >
                           View Listing
                         </Link>

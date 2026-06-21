@@ -21,9 +21,9 @@ import { useAuth } from "@/frontend/shared/context/AuthContext";
 const SIDEBAR_LINKS = [
   { label: "Home Page", href: "/", icon: Home },
   { label: "Events Directory", href: "/events", icon: Search },
-  { label: "Overview", href: "/dashboard", icon: LayoutDashboard },
-  { label: "Create Event", href: "/create-event", icon: CalendarPlus },
-  { label: "My Tournaments", href: "/tournaments", icon: Trophy },
+  { label: "Overview", href: "/organizer/dashboard", icon: LayoutDashboard },
+  { label: "Create Event", href: "/organizer/create-event", icon: CalendarPlus },
+  { label: "My Tournaments", href: "/organizer/tournaments", icon: Trophy },
 ];
 
 export default function DashboardLayout({

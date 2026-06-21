@@ -18,7 +18,7 @@ export default function Navbar() {
     { label: "Home", href: "/" },
     { label: "Events", href: "/events" },
     ...(isLoggedIn && (role === "organizer" || role === "admin")
-      ? [{ label: "Dashboard", href: "/dashboard" }]
+      ? [{ label: "Dashboard", href: "/organizer/dashboard" }]
       : []),
     ...(isLoggedIn && role === "admin"
       ? [{ label: "Admin", href: "/admin" }]
