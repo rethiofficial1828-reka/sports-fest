@@ -33,7 +33,7 @@ export async function POST(request: Request) {
     }
 
     // Hash the new password
-    const salt = await bcrypt.genSalt(10);
+    const salt = await bcrypt.genSalt(12);
     const passwordHash = await bcrypt.hash(password, salt);
 
     // Update the password and clear all reset tokens securely
@@ -47,6 +47,22 @@ export async function POST(request: Request) {
         passwordResetExpires: null,
       },
     });
+
+    // Verification: Re-read the user and confirm the password was actually saved
+    const updatedUser = await prisma.user.findUnique({ where: { id: user.id } });
+    if (!updatedUser) {
+      console.error("CRITICAL: User disappeared after password update!");
+      return NextResponse.json({ error: "Failed to verify password update." }, { status: 500 });
+    }
+
+    const verifyNewPassword = await bcrypt.compare(password, updatedUser.passwordHash);
+    if (!verifyNewPassword) {
+      console.error("CRITICAL: Password hash mismatch after update! Hash was not saved correctly.");
+      return NextResponse.json({ error: "Password update failed. Please try again." }, { status: 500 });
+    }
+
+    console.log(`Password successfully updated and verified for user ${user.id} (${user.email})`);
+
 
     // Clear the cookie
     cookieStore.delete("reset_session");
