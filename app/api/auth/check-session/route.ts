@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { prisma } from "@/backend/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   const cookieStore = await cookies();
   const sessionCookie = cookieStore.get("reset_session")?.value;
