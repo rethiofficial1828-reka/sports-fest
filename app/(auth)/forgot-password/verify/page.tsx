@@ -53,21 +53,23 @@ export default function VerifyOtpPage() {
     setIsLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/auth/verify-otp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, otp: data.otp }),
+      const { data: authData, error } = await supabase.auth.verifyOtp({
+        email,
+        token: data.otp,
+        type: 'email',
       });
 
-      const resData = await res.json();
-
-      if (!res.ok) {
-        setError(resData.error || "Invalid or expired code.");
+      if (error) {
+        setError(error.message || "Invalid or expired code.");
         return;
       }
 
-      setStep("reset");
-      router.push("/reset-password");
+      if (authData?.session) {
+        setStep("reset");
+        router.push("/reset-password");
+      } else {
+        setError("Something went wrong establishing your session.");
+      }
     } catch (err) {
       setError("Network error. Please try again.");
     } finally {
@@ -82,14 +84,9 @@ export default function VerifyOtpPage() {
     setError(null);
     
     try {
-      const res = await fetch("/api/auth/forgot-password", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      });
-      
-      if (!res.ok) {
-        if (res.status === 429) {
+      const { error } = await supabase.auth.signInWithOtp({ email });
+      if (error) {
+        if (error.status === 429) {
           setError("Too many requests. Please wait before trying again.");
         } else {
           setError("Failed to resend code.");

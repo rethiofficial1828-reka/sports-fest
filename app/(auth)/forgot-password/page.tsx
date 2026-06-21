@@ -36,18 +36,15 @@ export default function ForgotPasswordPage() {
     setIsLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/auth/forgot-password", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: data.email }),
-      });
+      const { error } = await supabase.auth.signInWithOtp({ email: data.email });
 
-      if (!res.ok) {
-        if (res.status === 429) {
+      if (error) {
+        if (error.status === 429) {
           setError("Too many requests. Please wait a minute before trying again.");
           return;
         }
-        throw new Error("Failed to send code.");
+        // Log it silently to avoid email enumeration
+        console.error("Reset password error:", error);
       }
 
       // Proceed to OTP step regardless to prevent email enumeration

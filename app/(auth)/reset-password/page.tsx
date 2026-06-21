@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import { Globe, Loader2, AlertCircle, CheckCircle2, LockKeyhole } from "lucide-react";
-import { useState, useEffect, Suspense } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { createBrowserClient } from "@supabase/ssr";
 import { useRouter } from "next/navigation";
 import { useForgotStore } from "@/frontend/shared/hooks/useForgotStore";
 import { motion } from "framer-motion";
@@ -32,14 +32,17 @@ export default function ResetPasswordPage() {
   const [success, setSuccess] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isValidatingSession, setIsValidatingSession] = useState(true);
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
 
   useEffect(() => {
     const checkSession = async () => {
       try {
-        const res = await fetch("/api/auth/check-session");
-        const data = await res.json();
+        const { data: { session } } = await supabase.auth.getSession();
         
-        if (!data.valid) {
+        if (!session) {
           router.push("/forgot-password");
         } else {
           setIsValidatingSession(false);
@@ -49,7 +52,7 @@ export default function ResetPasswordPage() {
       }
     };
     checkSession();
-  }, [router]);
+  }, [router, supabase.auth]);
 
   const form = useForm<ResetFormValues>({
     resolver: zodResolver(resetSchema),
@@ -59,7 +62,19 @@ export default function ResetPasswordPage() {
     setIsLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/auth/reset-password-final", {
+      // 1. Update password in Supabase Auth
+      const { error: sbError } = await supabase.auth.updateUser({
+        password: data.password
+      });
+
+      if (sbError) {
+        setError(sbError.message || "Failed to update password.");
+        setIsLoading(false);
+        return;
+      }
+
+      // 2. Sync password to Prisma DB
+      const res = await fetch("/api/auth/sync-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ password: data.password }),
@@ -68,11 +83,13 @@ export default function ResetPasswordPage() {
       const resData = await res.json();
       
       if (!res.ok) {
-        setError(resData.error || "Failed to reset password. Session may have expired.");
+        setError(resData.error || "Failed to sync password. Session may have expired.");
         setIsLoading(false);
         return;
       }
 
+      // 3. Clear recovery session so they must log in normally
+      await supabase.auth.signOut();
       reset(); // Clear zustand store
       setSuccess("Your password has been reset successfully. You can now log in.");
 
