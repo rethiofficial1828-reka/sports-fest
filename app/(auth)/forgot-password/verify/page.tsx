@@ -67,8 +67,7 @@ export default function VerifyOtpPage() {
       }
 
       setStep("reset");
-      // Force a hard navigation to guarantee the cookie is sent and state is fully refreshed
-      window.location.href = "/reset-password";
+      router.push("/reset-password");
     } catch (err) {
       setError("Network error. Please try again.");
     } finally {
