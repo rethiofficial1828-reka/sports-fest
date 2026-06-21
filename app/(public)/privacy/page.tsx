@@ -24,6 +24,11 @@ export default function PrivacyPage() {
       icon: FileText,
       title: "4. Third-Party Services",
       content: "We use Supabase for authentication services and database management, and Resend for transactional email delivery (such as password reset links and verification emails). We do not sell or lease your personal information to third parties."
+    },
+    {
+      icon: Eye,
+      title: "5. Platform Role & Registrations",
+      content: "Registration for tournaments is conducted using the respective college registration link provided on the event page. This platform acts purely as an intermediate directory. If you face any issues during the registration process, please email sportsfest250@gmail.com."
     }
   ];
 

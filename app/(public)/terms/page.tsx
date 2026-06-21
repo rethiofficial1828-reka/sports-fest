@@ -24,6 +24,11 @@ export default function TermsPage() {
       icon: Ban,
       title: "4. Abuse & Moderation",
       content: "SportsFest administrators reserve the right to audit, modify, decline, or delete any listing or registration, and block accounts that list spam, violate community guidelines, or threaten the platform's security."
+    },
+    {
+      icon: Scale,
+      title: "5. Platform Role & Registrations",
+      content: "All registrations for events will be done exclusively using the respective college's registration link provided on the event page. This platform acts merely as an intermediate directory connecting students with college festivals. If a user faces any issues with the platform, they can mail the registered email ID: sportsfest250@gmail.com."
     }
   ];
 

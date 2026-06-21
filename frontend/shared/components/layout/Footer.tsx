@@ -60,7 +60,7 @@ export default function Footer() {
             <ul className="space-y-4 text-sm text-slate-500">
               <li className="flex items-center gap-3">
                 <Mail className="w-4 h-4 text-slate-400" />
-                <a href="mailto:hello@sportsfest.in" className="hover:text-[#6B46C1] transition-colors">hello@sportsfest.in</a>
+                <a href="mailto:sportsfest250@gmail.com" className="hover:text-[#6B46C1] transition-colors">sportsfest250@gmail.com</a>
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="w-4 h-4 text-slate-400" />

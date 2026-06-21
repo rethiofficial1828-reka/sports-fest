@@ -24,6 +24,11 @@ export default function RefundPage() {
       icon: HelpCircle,
       title: "4. Disputes",
       content: "In case of disputes, students must contact the host college's physical education director or student committee using the contact details supplied on the tournament detail page."
+    },
+    {
+      icon: AlertTriangle,
+      title: "5. Platform Role & Registrations",
+      content: "All event registrations will be done using the respective college's registration link. This platform acts strictly as an intermediate directory. If a user faces any issues using the platform itself, they can mail our registered support email: sportsfest250@gmail.com."
     }
   ];
 
