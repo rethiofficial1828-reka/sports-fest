@@ -36,7 +36,9 @@ export default function ForgotPasswordPage() {
     setIsLoading(true);
     setError(null);
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(data.email);
+      // Use signInWithOtp instead of resetPasswordForEmail because Prisma-only users 
+      // do not exist in Supabase Auth yet. This auto-creates them and sends an OTP!
+      const { error } = await supabase.auth.signInWithOtp({ email: data.email });
 
       if (error) {
         // Supabase error: e.g., rate limit. Always show generic success for privacy, 

@@ -12,7 +12,7 @@ import { useForgotStore } from "@/frontend/shared/hooks/useForgotStore";
 import { motion } from "framer-motion";
 
 const otpSchema = z.object({
-  otp: z.string().length(6, { message: "Code must be exactly 6 digits." }).regex(/^\d+$/, "Code must contain only numbers."),
+  otp: z.string().length(8, { message: "Code must be exactly 8 digits." }).regex(/^\d+$/, "Code must contain only numbers."),
 });
 
 type OtpFormValues = z.infer<typeof otpSchema>;
@@ -56,7 +56,7 @@ export default function VerifyOtpPage() {
       const { data: authData, error } = await supabase.auth.verifyOtp({
         email,
         token: data.otp,
-        type: 'recovery',
+        type: 'email',
       });
 
       if (error) {
@@ -84,7 +84,7 @@ export default function VerifyOtpPage() {
     setError(null);
     
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email);
+      const { error } = await supabase.auth.signInWithOtp({ email });
       if (error) {
         if (error.status === 429) {
           setError("Too many requests. Please wait before trying again.");
@@ -119,7 +119,7 @@ export default function VerifyOtpPage() {
             Check your email
           </h1>
           <p className="text-slate-500 font-medium text-sm">
-            We sent a 6-digit code to <span className="text-[#111827] font-bold">{email}</span>
+            We sent an 8-digit code to <span className="text-[#111827] font-bold">{email}</span>
           </p>
         </div>
 
@@ -144,9 +144,9 @@ export default function VerifyOtpPage() {
                 </div>
                 <input
                   type="text"
-                  maxLength={6}
+                  maxLength={8}
                   className="input w-full pl-11 pr-4 py-3 tracking-widest font-mono text-center text-lg font-bold"
-                  placeholder="000000"
+                  placeholder="00000000"
                   {...form.register("otp")}
                 />
               </div>
