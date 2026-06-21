@@ -1,17 +1,38 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Trophy, Medal, Award, Star } from "lucide-react";
+import { Trophy, Medal, Award, Star, Loader2 } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+
+interface CollegeData {
+  rank: number;
+  id: string;
+  name: string;
+  events: number;
+  points: number;
+}
 
 export default function LeaderboardPage() {
-  const colleges = [
-    { rank: 1, name: "Indian Institute of Technology Madras", points: 1250, events: 15 },
-    { rank: 2, name: "National Institute of Technology Trichy", points: 980, events: 12 },
-    { rank: 3, name: "Anna University, Guindy", points: 850, events: 10 },
-    { rank: 4, name: "Vellore Institute of Technology", points: 720, events: 8 },
-    { rank: 5, name: "SRM Institute of Science and Technology", points: 640, events: 7 },
-  ];
+  const [colleges, setColleges] = useState<CollegeData[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchLeaderboard() {
+      try {
+        const res = await fetch('/api/leaderboard');
+        const data = await res.json();
+        if (data.success) {
+          setColleges(data.data);
+        }
+      } catch (error) {
+        console.error("Error fetching leaderboard:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchLeaderboard();
+  }, []);
 
   return (
     <div className="pt-24 pb-16 bg-[#F8FAFC] min-h-screen">
@@ -33,7 +54,15 @@ export default function LeaderboardPage() {
 
           <div className="p-6 sm:p-10">
             <div className="space-y-4">
-              {colleges.map((college, idx) => (
+              {loading ? (
+                <div className="flex justify-center py-10">
+                  <Loader2 className="w-8 h-8 text-[#6B46C1] animate-spin" />
+                </div>
+              ) : colleges.length === 0 ? (
+                <div className="text-center py-10 text-slate-500">
+                  No college data available yet.
+                </div>
+              ) : colleges.map((college, idx) => (
                 <motion.div
                   key={idx}
                   initial={{ opacity: 0, y: 15 }}
