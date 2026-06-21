@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Globe, Loader2, AlertCircle, CheckCircle2, LockKeyhole } from "lucide-react";
+import { Globe, Loader2, AlertCircle, CheckCircle2, LockKeyhole, Eye, EyeOff } from "lucide-react";
 import { useState, useEffect, Suspense } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -61,6 +61,9 @@ export default function ResetPasswordPage() {
   const form = useForm<ResetFormValues>({
     resolver: zodResolver(resetSchema),
   });
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const onSubmit = async (data: ResetFormValues) => {
     setIsLoading(true);
@@ -158,11 +161,18 @@ export default function ResetPasswordPage() {
                     <LockKeyhole className="h-5 w-5 text-slate-400" />
                   </div>
                   <input
-                    type="password"
-                    className="input w-full pl-11 pr-4 py-3"
+                    type={showPassword ? "text" : "password"}
+                    className="input w-full pl-11 pr-11 py-3"
                     placeholder="••••••••"
                     {...form.register("password")}
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
+                  >
+                    {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                  </button>
                 </div>
                 {form.formState.errors.password && (
                   <p className="text-red-500 text-xs font-medium mt-1.5">
@@ -178,11 +188,18 @@ export default function ResetPasswordPage() {
                     <LockKeyhole className="h-5 w-5 text-slate-400" />
                   </div>
                   <input
-                    type="password"
-                    className="input w-full pl-11 pr-4 py-3"
+                    type={showConfirmPassword ? "text" : "password"}
+                    className="input w-full pl-11 pr-11 py-3"
                     placeholder="••••••••"
                     {...form.register("confirmPassword")}
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
+                  >
+                    {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                  </button>
                 </div>
                 {form.formState.errors.confirmPassword && (
                   <p className="text-red-500 text-xs font-medium mt-1.5">
