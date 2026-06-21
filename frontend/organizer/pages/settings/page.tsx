@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { User, Lock, Bell, Shield, Save } from "lucide-react";
 import { useAuth } from "@/frontend/shared/context/AuthContext";
+import { ConnectGoogleButton } from "@/frontend/shared/components/ConnectGoogleButton";
 
 export default function SettingsPage() {
   const { role, user } = useAuth();
@@ -71,7 +72,18 @@ export default function SettingsPage() {
             </div>
           )}
 
-          {activeTab !== "profile" && (
+          {activeTab === "security" && (
+            <div className="space-y-6">
+              <h2 className="text-xl font-bold text-[#111827] mb-6 border-b border-slate-100 pb-4">Security & Authentication</h2>
+              <div className="bg-slate-50 border border-slate-200 rounded-xl p-5">
+                <h3 className="font-bold text-[#111827]">Connected Accounts</h3>
+                <p className="text-sm text-slate-500 mb-4 mt-1">Connect your Google account to enable quick sign-in without a password.</p>
+                <ConnectGoogleButton />
+              </div>
+            </div>
+          )}
+
+          {activeTab !== "profile" && activeTab !== "security" && (
             <div className="text-center py-10 text-slate-500">
               <p className="font-medium text-lg text-[#111827]">Coming Soon</p>
               <p className="text-sm">This section is currently under construction.</p>

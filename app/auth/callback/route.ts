@@ -106,6 +106,12 @@ export async function GET(request: Request) {
       }
     } else {
       console.error('OAuth callback error:', error)
+      
+      // Handle the specific case where an email already exists in Supabase
+      // but isn't linked to the Google identity.
+      if (error?.message?.toLowerCase().includes('already registered') || error?.status === 400) {
+        return NextResponse.redirect(`${origin}/login?error=account_exists`)
+      }
     }
   }
 

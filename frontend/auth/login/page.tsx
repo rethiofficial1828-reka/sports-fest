@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Globe, Loader2, AlertCircle } from "lucide-react";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -25,12 +25,22 @@ async function hashPassword(password: string): Promise<string> {
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [error, setError] = useState<string | null>(null);
   const [devVerificationLink, setDevVerificationLink] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [lockoutTime, setLockoutTime] = useState<number>(0);
   const supabase = createClient();
+
+  useEffect(() => {
+    const errorParam = searchParams.get('error');
+    if (errorParam === 'account_exists') {
+      setError("An account already exists with this email. Please sign in with your password, or connect your Google account from your profile settings.");
+    } else if (errorParam) {
+      setError(decodeURIComponent(errorParam));
+    }
+  }, [searchParams]);
 
   const {
     register,
