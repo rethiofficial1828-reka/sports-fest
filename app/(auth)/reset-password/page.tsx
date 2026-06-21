@@ -36,7 +36,7 @@ export default function ResetPasswordPage() {
   useEffect(() => {
     // 1. Strict Frontend Check: Force linear flow from step 2
     if (step !== "reset") {
-      router.push("/forgot-password");
+      router.replace("/forgot-password");
       return;
     }
 
@@ -47,12 +47,12 @@ export default function ResetPasswordPage() {
         const data = await res.json();
         
         if (!data.valid) {
-          router.push("/forgot-password");
+          router.replace("/forgot-password");
         } else {
           setIsValidatingSession(false);
         }
       } catch (err) {
-        router.push("/forgot-password");
+        router.replace("/forgot-password");
       }
     };
     checkSession();

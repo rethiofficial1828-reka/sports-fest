@@ -32,7 +32,7 @@ export default function VerifyOtpPage() {
   useEffect(() => {
     // If no email or accessed out of order, push back to start
     if (!email || step !== "otp") {
-      router.push("/forgot-password");
+      router.replace("/forgot-password");
     }
   }, [email, step, router]);
 
