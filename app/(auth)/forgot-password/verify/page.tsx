@@ -30,8 +30,9 @@ export default function VerifyOtpPage() {
   );
 
   useEffect(() => {
-    // If no email or accessed out of order, push back to start
-    if (!email || step !== "otp") {
+    // Only redirect if user hasn't started the flow yet or has no email.
+    // Allow step === "reset" because that means we're transitioning forward.
+    if (!email || step === "forgot") {
       router.replace("/forgot-password");
     }
   }, [email, step, router]);
