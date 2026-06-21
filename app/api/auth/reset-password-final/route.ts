@@ -45,6 +45,7 @@ export async function POST(request: Request) {
         resetTokenExpiry: null,
         passwordResetToken: null,
         passwordResetExpires: null,
+        isEmailVerified: true,
       },
     });
 
