@@ -12,7 +12,7 @@ import { useForgotStore } from "@/frontend/shared/hooks/useForgotStore";
 import { motion } from "framer-motion";
 
 const otpSchema = z.object({
-  otp: z.string().length(8, { message: "Code must be exactly 8 digits." }).regex(/^\d+$/, "Code must contain only numbers."),
+  otp: z.string().length(6, { message: "Code must be exactly 6 digits." }).regex(/^\d+$/, "Code must contain only numbers."),
 });
 
 type OtpFormValues = z.infer<typeof otpSchema>;
@@ -53,23 +53,21 @@ export default function VerifyOtpPage() {
     setIsLoading(true);
     setError(null);
     try {
-      const { data: authData, error } = await supabase.auth.verifyOtp({
-        email,
-        token: data.otp,
-        type: 'email',
+      const res = await fetch("/api/auth/verify-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, otp: data.otp }),
       });
 
-      if (error) {
-        setError(error.message || "Invalid or expired code.");
+      const resData = await res.json();
+
+      if (!res.ok) {
+        setError(resData.error || "Invalid or expired code.");
         return;
       }
 
-      if (authData?.session) {
-        setStep("reset");
-        router.push("/reset-password");
-      } else {
-        setError("Something went wrong establishing your session.");
-      }
+      setStep("reset");
+      router.push("/reset-password");
     } catch (err) {
       setError("Network error. Please try again.");
     } finally {
@@ -84,9 +82,14 @@ export default function VerifyOtpPage() {
     setError(null);
     
     try {
-      const { error } = await supabase.auth.signInWithOtp({ email });
-      if (error) {
-        if (error.status === 429) {
+      const res = await fetch("/api/auth/forgot-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      
+      if (!res.ok) {
+        if (res.status === 429) {
           setError("Too many requests. Please wait before trying again.");
         } else {
           setError("Failed to resend code.");
@@ -119,7 +122,7 @@ export default function VerifyOtpPage() {
             Check your email
           </h1>
           <p className="text-slate-500 font-medium text-sm">
-            We sent an 8-digit code to <span className="text-[#111827] font-bold">{email}</span>
+            We sent a 6-digit code to <span className="text-[#111827] font-bold">{email}</span>
           </p>
         </div>
 
@@ -144,9 +147,9 @@ export default function VerifyOtpPage() {
                 </div>
                 <input
                   type="text"
-                  maxLength={8}
+                  maxLength={6}
                   className="input w-full pl-11 pr-4 py-3 tracking-widest font-mono text-center text-lg font-bold"
-                  placeholder="00000000"
+                  placeholder="000000"
                   {...form.register("otp")}
                 />
               </div>
