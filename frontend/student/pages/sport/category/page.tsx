@@ -7,9 +7,11 @@ import { SPORTS } from "@/backend/lib/constants/sports";
 import { MOCK_EVENTS } from "@/backend/lib/mock-data";
 import EventCard from "@/frontend/shared/components/events/EventCard";
 import { cn } from "@/backend/lib/utils/cn";
+import { useAuth } from "@/frontend/shared/context/AuthContext";
 
 export default function SportCategoryPage({ params }: { params: Promise<{ category: string }> }) {
   const { category } = use(params);
+  const { role, isLoggedIn } = useAuth();
   
   const sport = SPORTS.find((s) => s.slug === category);
   const events = MOCK_EVENTS.filter((e) => e.sport.name === sport?.name);
@@ -110,10 +112,12 @@ export default function SportCategoryPage({ params }: { params: Promise<{ catego
         ) : (
           <div className="text-center py-20 surface border-dashed border-2 border-slate-200 bg-slate-50 shadow-none">
             <h3 className="font-display text-xl font-bold text-[#111827] mb-2">No active {sport.name} events</h3>
-            <p className="text-slate-500 font-medium mb-6">Check back later or host your own tournament!</p>
-            <Link href="/dashboard/create-event" className="btn-primary">
-              Host an Event
-            </Link>
+            <p className="text-slate-500 font-medium mb-6">Check back later or participate in other tournaments!</p>
+            {isLoggedIn && role !== "student" && (
+              <Link href="/organizer/create-event" className="btn-primary">
+                Host an Event
+              </Link>
+            )}
           </div>
         )}
       </div>
