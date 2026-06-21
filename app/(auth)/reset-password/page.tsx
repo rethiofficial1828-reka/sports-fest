@@ -34,9 +34,22 @@ export default function ResetPasswordPage() {
   const [isValidatingSession, setIsValidatingSession] = useState(true);
 
   useEffect(() => {
-    // We rely on the secure HTTP-only cookie to protect the final submission
-    setIsValidatingSession(false);
-  }, []);
+    const checkSession = async () => {
+      try {
+        const res = await fetch("/api/auth/check-session");
+        const data = await res.json();
+        
+        if (!data.valid) {
+          router.push("/forgot-password");
+        } else {
+          setIsValidatingSession(false);
+        }
+      } catch (err) {
+        router.push("/forgot-password");
+      }
+    };
+    checkSession();
+  }, [router]);
 
   const form = useForm<ResetFormValues>({
     resolver: zodResolver(resetSchema),
