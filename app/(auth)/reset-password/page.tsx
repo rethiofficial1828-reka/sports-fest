@@ -34,6 +34,13 @@ export default function ResetPasswordPage() {
   const [isValidatingSession, setIsValidatingSession] = useState(true);
 
   useEffect(() => {
+    // 1. Strict Frontend Check: Force linear flow from step 2
+    if (step !== "reset") {
+      router.push("/forgot-password");
+      return;
+    }
+
+    // 2. Strict Backend Check: Verify the secure session cookie
     const checkSession = async () => {
       try {
         const res = await fetch("/api/auth/check-session");
@@ -49,7 +56,7 @@ export default function ResetPasswordPage() {
       }
     };
     checkSession();
-  }, [router]);
+  }, [step, router]);
 
   const form = useForm<ResetFormValues>({
     resolver: zodResolver(resetSchema),
