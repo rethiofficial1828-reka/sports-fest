@@ -117,10 +117,10 @@ export async function POST() {
   // Logout action
   try {
     const response = NextResponse.json({ success: true });
-    response.cookies.delete("access_token");
-    response.cookies.delete("refresh_token");
-    response.cookies.delete("session");
-    response.cookies.delete("csrf_token");
+    response.cookies.set("access_token", "", { maxAge: 0, path: "/" });
+    response.cookies.set("refresh_token", "", { maxAge: 0, path: "/" });
+    response.cookies.set("session", "", { maxAge: 0, path: "/" });
+    response.cookies.set("csrf_token", "", { maxAge: 0, path: "/" });
     return response;
   } catch (e: any) {
     return NextResponse.json({ error: e.message || "Internal server error" }, { status: 500 });

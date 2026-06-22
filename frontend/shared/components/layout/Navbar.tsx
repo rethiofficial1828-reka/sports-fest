@@ -88,9 +88,10 @@ export default function Navbar() {
                   </span>
                   <button 
                     onClick={logout}
-                    className="text-sm font-bold text-red-600 hover:text-red-700 transition-colors"
+                    disabled={isLoading}
+                    className="text-sm font-bold text-red-600 hover:text-red-700 transition-colors disabled:opacity-50"
                   >
-                    Sign Out
+                    {isLoading ? "Signing out..." : "Sign Out"}
                   </button>
                 </div>
               ) : (
@@ -166,12 +167,14 @@ export default function Navbar() {
                     </p>
                     <button
                       onClick={() => {
+                        if (isLoading) return;
                         logout();
-                        setMobileMenuOpen(false);
+                        // don't immediately close mobile menu so they see the loading text
                       }}
-                      className="w-full flex justify-center py-4 bg-red-50 text-red-600 hover:bg-red-100 rounded-2xl text-lg font-bold transition-all"
+                      disabled={isLoading}
+                      className="w-full flex justify-center py-4 bg-red-50 text-red-600 hover:bg-red-100 rounded-2xl text-lg font-bold transition-all disabled:opacity-50"
                     >
-                      Sign Out
+                      {isLoading ? "Signing out..." : "Sign Out"}
                     </button>
                   </div>
                 ) : (
