@@ -12,7 +12,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
-  const { isLoggedIn, role, user, logout } = useAuth();
+  const { isLoggedIn, role, user, logout, isLoading } = useAuth();
 
   const links = [
     { label: "Home", href: "/" },
